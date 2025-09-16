@@ -16,4 +16,16 @@
 git clone https://github.com/shinurim/SW-.git
 cd SW-
 
+```
+### 2. Create & Activate Virtual Environment + Install Dependencies
+```bash
+# Windows
+python -m venv venv
+venv\Scripts\activate
 
+# Mac/Linux
+python3 -m venv venv
+source venv/bin/activate
+
+pip install -r requirements.txt
+```
