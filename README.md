@@ -45,3 +45,13 @@ pip install -r requirements.txt
 
 7. React Toast Popup 모듈 설치 : npm install react-simple-toasts
 ```
+
+### 3. Django
+```bash
+cd Backend
+python -m venv venv
+venv\Scripts\activate
+pip install -r requirements.txt
+python manage.py migrate
+python manage.py runserver
+```
