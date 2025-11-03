@@ -1,0 +1,445 @@
+    :root {
+      --sidebar-width: 180px;
+      --bg-page: #f4f5fb;
+      --primary: #2b6ee5;
+      --border-color: #e2e5f0;
+      --card-bg: #ffffff;
+      --text-primary: #1f2431;
+      --text-secondary: #596077;
+      --text-light: #9aa1b1;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans KR", sans-serif;
+      background: var(--bg-page);
+      color: var(--text-primary);
+    }
+
+    /* =============== 전체 레이아웃 =============== */
+    .app {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* =============== 사이드바 (기존 유지) =============== */
+    .sidebar {
+      width: var(--sidebar-width);
+      background: var(--card-bg);
+      border-right: 1px solid #eceef3;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .logo {
+      height: 64px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 0 20px;
+      border-bottom: 1px solid #f2f2f2;
+      font-weight: 700;
+      font-size: 24px;
+    }
+
+    .logo span:nth-child(1) {
+      color: #f7de35;
+    }
+
+    .nav-block {
+      padding: 10px 0;
+      border-bottom: 1px solid #f3f4f6;
+    }
+
+    .nav-item {
+      padding: 6px 20px;
+      font-size: 13px;
+      cursor: pointer;
+      color: #1f2431;
+    }
+
+    .nav-item.active,
+    .nav-item:hover {
+      background: rgba(43, 110, 229, .04);
+    }
+
+    /* =============== 메인/상단바 (기존 유지) =============== */
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background: var(--bg-page);
+    }
+
+    .topbar {
+      height: 64px;
+      background: var(--card-bg);
+      border-bottom: 1px solid #eceef3;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 26px 0 18px;
+      gap: 16px;
+    }
+
+    .topbar-left {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+    }
+
+    .search-bar {
+      width: 420px;
+      height: 34px;
+      background: var(--card-bg);
+      border: 1px solid #ecedf3;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 0 12px;
+      box-shadow: 0 3px 14px rgba(34, 53, 86, .03);
+    }
+
+    .search-bar input {
+      border: none;
+      outline: none;
+      background: transparent;
+      flex: 1;
+      font-size: 12px;
+    }
+
+    .search-icon {
+      width: 16px;
+      height: 16px;
+      border-radius: 999px;
+      background: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11.3333 11.3333L14 14' stroke='%23A3A6B5' stroke-linecap='round'/%3E%3Ccircle cx='7.33333' cy='7.33333' r='3.66667' stroke='%23A3A6B5'/%3E%3C/svg%3E") center/12px 12px no-repeat;
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .noti {
+      width: 28px;
+      height: 28px;
+      background: #f1f5ff;
+      border-radius: 999px;
+      position: relative;
+    }
+
+    .noti::after {
+      content: "";
+      position: absolute;
+      top: 3px;
+      right: 3px;
+      width: 8px;
+      height: 8px;
+      background: #ff4b6e;
+      border-radius: 999px;
+      border: 1px solid var(--card-bg);
+    }
+
+    .profile-box {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .profile-avatar {
+      width: 30px;
+      height: 30px;
+      border-radius: 999px;
+      background: #ddd;
+    }
+
+    .profile-meta {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.1;
+    }
+
+    .profile-name {
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .profile-team {
+      font-size: 10px;
+      color: #868fa6;
+    }
+
+    .logout-btn {
+      background: var(--primary);
+      border: none;
+      color: var(--card-bg);
+      border-radius: 8px;
+      padding: 6px 14px 7px;
+      font-size: 12px;
+      cursor: pointer;
+      font-weight: 500;
+    }
+
+    /* =============== 콘텐츠 영역 (기존 유지) =============== */
+    .content {
+      flex: 1;
+      padding: 22px 26px 26px;
+      overflow-y: auto;
+    }
+    
+    /* =================================================
+     ▼▼▼▼▼▼▼▼▼▼▼▼▼ 새롭게 추가/변경된 스타일 ▼▼▼▼▼▼▼▼▼▼▼▼▼
+    =================================================
+    */
+    
+    /* --- [신규] 페이지 헤더 (제목 + SQL 토글 버튼) --- */
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+
+    .page-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin: 0; /* margin-bottom을 page-header로 이동 */
+    }
+
+    /* 공용 카드 스타일 */
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 16px 20px;
+    }
+    
+    .card-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .card-title::before {
+      content: '+';
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      font-size: 16px;
+      line-height: 16px;
+      text-align: center;
+      font-weight: 700;
+      color: var(--primary);
+      background: #f1f5ff;
+      border-radius: 4px;
+    }
+
+    /* --- [수정] 상단 검색 영역 (기본 1단, 활성화시 2단) --- */
+    .query-section {
+      display: grid;
+      grid-template-columns: 1fr; /* 기본 1단 그리드 */
+      gap: 20px;
+      margin-bottom: 20px;
+      transition: grid-template-columns 0.3s ease;
+    }
+    
+    /* --- [신규] SQL 활성화 상태 --- */
+    main.sql-view-active .query-section {
+      grid-template-columns: 1fr 1fr; /* 활성화 시 2단 그리드 */
+    }
+
+    .form-group {
+      margin-bottom: 10px;
+    }
+
+    .form-input,
+    .form-textarea {
+      width: 100%;
+      padding: 10px 14px;
+      border-radius: 8px;
+      border: 1px solid #d9dce5;
+      background: #fcfdff;
+      font-size: 13px;
+      font-family: inherit;
+      resize: vertical;
+    }
+    .form-textarea {
+      min-height: 120px;
+    }
+    .form-input:focus,
+    .form-textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px rgba(43, 110, 229, .15);
+    }
+    
+    .form-hint {
+      font-size: 11px;
+      color: var(--text-light);
+      margin-top: 6px;
+      padding-left: 4px;
+    }
+    
+    /* SQL 에디터 영역 */
+    .sql-card {
+      display: none; /* --- [신규] 기본적으로 SQL 카드는 숨김 --- */
+    }
+
+    /* --- [신규] SQL 활성화 상태 --- */
+    main.sql-view-active .sql-card {
+      display: block; /* 활성화 시 SQL 카드 보임 */
+    }
+
+    .sql-editor-box {
+      background: #1e1e1e; /* 다크 모드 배경 */
+      border-radius: 8px;
+      padding: 14px;
+      font-family: "SF Mono", "Menlo", monospace;
+      font-size: 13px;
+      color: #d4d4d4;
+      min-height: 120px;
+      line-height: 1.5;
+    }
+    .sql-editor-box .sql-keyword { color: #569cd6; }
+    .sql-editor-box .sql-table { color: #4ec9b0; }
+    .sql-editor-box .sql-string { color: #ce9178; }
+    .sql-editor-box .sql-comment { color: #6a9955; }
+    
+    .sql-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--primary);
+      background: #f1f5ff;
+      padding: 3px 8px;
+      border-radius: 6px;
+      margin-bottom: 8px;
+      display: inline-block;
+    }
+    .card-title .sql-label { /* 카드 제목 안의 SQL 라벨 */
+      font-size: 12px;
+      margin-bottom: 0;
+    }
+    .card-title.sql-title::before { content: 'SQL'; font-size: 10px; }
+
+
+    /* 버튼 스타일 */
+    .btn {
+      border: none;
+      border-radius: 8px;
+      padding: 8px 16px 9px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: center;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: background-color 0.2s, color 0.2s;
+    }
+    .btn-primary {
+      background: var(--primary);
+      color: var(--card-bg);
+    }
+    .btn-primary:hover { filter: brightness(1.1); }
+    
+    .btn-secondary {
+      background: #e9ecf3;
+      color: var(--text-secondary);
+      font-size: 12px; /* 버튼 크기 살짝 줄임 */
+      padding: 6px 14px 7px;
+    }
+    .btn-secondary:hover { background: #dfe3eb; }
+    
+    .btn-outline {
+      background: var(--card-bg);
+      color: var(--primary);
+      border: 1px solid var(--primary);
+    }
+    .btn-outline:hover { background: #f1f5ff; }
+
+    .btn-save-excel {
+      background: #1d6f42;
+      color: white;
+      font-size: 12px;
+      padding: 5px 12px 6px;
+    }
+    .btn-save-excel:hover { background: #175a35; }
+
+
+    /* 하단 결과 영역 */
+    .result-summary {
+      font-size: 13px;
+      color: var(--text-secondary);
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 10px 16px;
+      margin-bottom: 20px;
+    }
+
+    .result-table-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    
+    .result-table-container {
+      width: 100%;
+      overflow-x: auto;
+    }
+    
+    .result-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .result-table th,
+    .result-table td {
+      padding: 10px 12px;
+      text-align: left;
+      border-bottom: 1px solid var(--border-color);
+    }
+    .result-table th {
+      background: #f7f8fc;
+      font-weight: 600;
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+    .result-table td {
+      background: var(--card-bg);
+    }
+    .result-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    /* 추천 질문 */
+    .recommend-list {
+      padding: 0;
+      margin: 0;
+      list-style: none;
+    }
+    .recommend-item {
+      font-size: 13px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      color: var(--text-secondary);
+    }
+    .recommend-item:hover {
+      background: #f1f5ff;
+      color: var(--primary);
+    }

@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>DBee Bridge - Search</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="./style.css" />
+</head>
+
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="logo"><span>DBee</span><span>Bridge</span></div>
+      <div class="nav-block">
+        <div class="nav-item">Dashboard</div>
+        <div class="nav-item active">Search</div>
+        <div class="nav-item">Checkbox Search</div>
+        <div class="nav-item">Segment</div>
+      </div>
+      <div class="nav-block">
+        <div class="nav-item">My page</div>
+        <div class="nav-item">Dictionary</div>
+        <div class="nav-item">How to use</div>
+      </div>
+    </aside>
+
+    <div class="main">
+      <header class="topbar">
+        <div style="width:140px;"></div>
+        <div class="topbar-left">
+          <div class="search-bar">
+            <div class="search-icon"></div>
+            <input type="text" placeholder="Search" />
+          </div>
+        </div>
+        <div class="topbar-right">
+          <div class="noti"></div>
+          <div class="profile-box">
+            <div class="profile-avatar"></div>
+            <div class="profile-meta">
+              <span class="profile-name">피그마</span>
+              <span class="profile-team">마케팅 팀</span>
+            </div>
+          </div>
+          <button class="logout-btn">LogOut</button>
+        </div>
+      </header>
+
+      <main class="content">
+        <div class="page-header">
+          <h1 class="page-title">Search</h1>
+          <button id="toggleSqlBtn" class="btn btn-secondary">SQL 편집</button>
+        </div>
+
+        <div class="card question-card">
+          <h2 class="card-title">질문</h2>
+          <div class="form-group">
+            <textarea id="queryInput" class="form-textarea" placeholder="나머지 질문을 입력해주세요."></textarea>
+            <p class="form-hint">최종적으로 검색 할 질문을 확인해 주세요.</p>
+          </div>
+          <div style="text-align: right;">
+            <button id="searchBtn" class="btn btn-primary">검색</button>
+          </div>
+        </div>
+
+        <section id="resultSection" class="card" style="margin-top:20px;"></section>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const API_URL = "http://127.0.0.1:8000/api/search"; // ✅ Django API 주소
+      const searchBtn = document.getElementById("searchBtn");
+      const queryInput = document.getElementById("queryInput");
+      const resultSection = document.getElementById("resultSection");
+      const toggleSqlBtn = document.getElementById("toggleSqlBtn");
+      const mainContent = document.querySelector(".content");
+
+      // ✅ SQL 보기 토글 버튼
+      if (toggleSqlBtn && mainContent) {
+        toggleSqlBtn.addEventListener("click", function () {
+          mainContent.classList.toggle("sql-view-active");
+          toggleSqlBtn.textContent = mainContent.classList.contains("sql-view-active")
+            ? "SQL 닫기" : "SQL 편집";
+        });
+      }
+
+      // ✅ 안전한 fetch(JSON 자동 판별)
+      async function safeFetchJson(url, options) {
+        const res = await fetch(url, options);
+        const ct = res.headers.get("content-type") || "";
+        const text = await res.text();
+        let data = null;
+        if (ct.includes("application/json")) {
+          try { data = JSON.parse(text); } catch (_) { /* ignore */ }
+        }
+        return { ok: res.ok, status: res.status, data, text, ct };
+      }
+
+      // ✅ 검색 버튼 클릭 시 동작
+      if (searchBtn) {
+        searchBtn.addEventListener("click", async () => {
+          const query = queryInput.value.trim();
+          if (!query) {
+            alert("질문을 입력해주세요!");
+            return;
+          }
+
+          resultSection.innerHTML = "<p>⏳ 검색 중...</p>";
+
+          try {
+            const { ok, status, data, text, ct } = await safeFetchJson(API_URL, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ query }),
+            });
+
+            if (!ok) {
+              resultSection.innerHTML =
+                `<div style="color:#c00;">
+                   ⚠ 서버 오류 (${status})<br>
+                   <pre style="white-space:pre-wrap">${text.slice(0, 800)}</pre>
+                 </div>`;
+              return;
+            }
+
+            if (!data) {
+              resultSection.innerHTML =
+                `<div style="color:#c00;">
+                   ⚠ 서버가 JSON을 반환하지 않았습니다.<br>
+                   (content-type: ${ct})<br>
+                   <pre style="white-space:pre-wrap">${text.slice(0, 800)}</pre>
+                 </div>`;
+              return;
+            }
+
+            if (data.error) {
+              resultSection.innerHTML = `<div style="color:#c00;">⚠ ${data.error}</div>`;
+              return;
+            }
+
+            // ✅ SQL/요약/결과 렌더링
+            const sqlBlock = `<pre>${data.sql_text || "SQL 없음"}</pre>`;
+            const summary = `
+              <p>
+                '${data.last_query}' → ${data.count}개 결과<br>
+                ${data.opinion ? `오피니언: "${data.opinion}" (${data.main}/${data.sub})` : ""}
+              </p>`;
+
+            const table = (data.rows && data.rows.length)
+              ? `<table class="result-table">
+                   <thead><tr>${data.columns.map(c => `<th>${c}</th>`).join("")}</tr></thead>
+                   <tbody>${data.rows.slice(0, 10)
+                     .map(r => `<tr>${r.map(v => `<td>${v}</td>`).join("")}</tr>`)
+                     .join("")}</tbody>
+                 </table>`
+              : `<p style="text-align:center;">검색 결과가 없습니다.</p>`;
+
+            resultSection.innerHTML = `
+              <div class="sql-card">${sqlBlock}</div>
+              <div class="result-summary">${summary}</div>
+              ${table}
+            `;
+          } catch (err) {
+            resultSection.innerHTML = `<div style="color:#c00;">⚠ 요청 실패: ${err}</div>`;
+          }
+        });
+      }
+    });
+  </script>
+</body>
+</html>
