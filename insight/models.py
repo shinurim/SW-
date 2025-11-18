@@ -1,27 +1,12 @@
 from django.db import models
 from pgvector.django import VectorField
 
-EMB_DIM1 = 768
-
-class ItemEmbedding(models.Model):
-    uid  = models.CharField(max_length=64, db_index=True)
-    main = models.TextField(null=True, blank=True)
-    sub  = models.TextField(null=True, blank=True)
-    qids_used = models.TextField(null=True, blank=True)
-    vec  = VectorField(dimensions=EMB_DIM1)
+class InsightDocVec(models.Model):
+    doc_id = models.TextField(null=True)
+    chunk_index = models.IntegerField(null=True)
+    content = models.TextField(null=True)
+    embedding = VectorField(dimensions=1024, null=True)  # 차원수만 KURE에 맞게
 
     class Meta:
-        db_table = "kure_item_embeddings_v2"
-        indexes = [
-            models.Index(fields=["uid", "sub"]),  # ✅ uid + sub 복합 인덱스
-        ]
-
-    def __str__(self):
-        return f"{self.uid} | {self.sub}"
-
-    
-EMB_DIM2 = 1536  
-
-class DocVec(models.Model):
-    content = models.TextField()
-    vec = VectorField(dimensions=EMB_DIM2)
+        db_table = "insight_docvec"
+        managed = True       # ❗ 꼭 True
