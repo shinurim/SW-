@@ -7,8 +7,13 @@ SECRET_KEY = 'django-insecure-=nr=e)c*5zz&0-5mmbujca&reicv&i5dj+=2b11h_mp#%=#jm2
 
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
+ALLOWED_HOSTS = [
+    "localhost",
+    "127.0.0.1",
+    "10.134.100.16",  # ← 지금 이 노트북 IP
+]
 
 # Application definition
 
@@ -29,8 +34,8 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
-    'django.middleware.security.SecurityMiddleware',
     "django.middleware.common.CommonMiddleware",
+    'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -40,19 +45,15 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'swproject_backend.urls'
 
+CORS_ALLOW_ALL_ORIGINS = True  
+
 CORS_ALLOWED_ORIGINS = [
-    "http://127.0.0.1:5501",
-    "http://localhost:5501",
+    "http://localhost:5173",
+    "http://리액트_IP:5173",   
 ]
 
-CORS_URLS_REGEX = r"^/api/.*$"
+CORS_PREFLIGHT_MAX_AGE = 86400
 
-# 헤더/메서드 허용
-CORS_ALLOW_HEADERS = list(default_headers)
-CORS_ALLOW_METHODS = list(default_methods)  # ['DELETE','GET','OPTIONS','PATCH','POST','PUT']
-
-# 쿠키 안 쓰면 False
-CORS_ALLOW_CREDENTIALS = False
 
 TEMPLATES = [
     {
@@ -85,7 +86,7 @@ DATABASES = {
         'HOST': '127.0.0.1',
         'PORT': '5432',
     },
-    'vecdb': {
+    'vecdb': {  #RAG, 문서vec
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'ragdb',
         'USER': 'postgres',
